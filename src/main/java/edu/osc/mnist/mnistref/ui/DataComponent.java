@@ -5,52 +5,49 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
-public class DigitComponent extends Component {
-   private static final long serialVersionUID = 2519871207473034778L;
+public class DataComponent extends Component {
+   private static final long serialVersionUID = 4272721784342026342L;
 
    public final static int DEFAULT_REPLICATION = 8;
 
-   private int[][] pixels = null;
-   private int pixelRows = 0;
-   private int pixelCols = 0;
+   private double[] data = null;
+   private int dataRows = 0;
+   private int dataCols = 0;
    private int replication = DEFAULT_REPLICATION;
    private Dimension minimumSize = null;
    private Dimension preferredSize = null;
 
-   public DigitComponent() {
+   public DataComponent() {
       super();
       setBackground(Color.LIGHT_GRAY);
    }
 
-   public DigitComponent(int[][] pixels) {
+   public DataComponent(double[] data, int dataRows) {
       super();
-      setPixels(pixels);
+      setData(data, dataRows);
    }
 
-   public int[][] getPixels() {
-      return pixels;
+   public double[] getData() {
+      return data;
    }
 
-   public void setPixels(int[][] pixels) {
-      this.pixels = pixels;
-      pixelRows = 0;
-      pixelCols = 0;
+   public void setData(double[] data, int dataRows) {
+      this.data = data;
+      this.dataRows = dataRows;
+      dataCols = 0;
       minimumSize = null;
       preferredSize = null;
-      if (pixels != null) {
-         pixelRows = pixels.length;
-         if (pixelRows > 0) {
-            pixelCols = pixels[0].length;
-         }
+      if (data != null) {
+         dataCols = data.length / dataRows;
       }
    }
 
-   public int getPixelRows() {
-      return pixelRows;
+   public int getDataRows() {
+      return dataRows;
    }
 
-   public int getPixelCols() {
-      return pixelCols;
+   public int getDataCols() {
+      return dataCols;
    }
 
    public int getReplication() {
@@ -67,7 +64,7 @@ public class DigitComponent extends Component {
    @Override
    public Dimension getMinimumSize() {
       if (minimumSize == null) {
-         minimumSize = new Dimension(pixelCols, pixelRows);
+         minimumSize = new Dimension(dataCols, dataRows);
       }
       return minimumSize;
    }
@@ -75,7 +72,7 @@ public class DigitComponent extends Component {
    @Override
    public Dimension getPreferredSize() {
       if (preferredSize == null) {
-         preferredSize = new Dimension(replication * pixelCols, replication * pixelRows);
+         preferredSize = new Dimension(replication * dataCols, replication * dataRows);
       }
       return preferredSize;
    }
@@ -84,16 +81,16 @@ public class DigitComponent extends Component {
    public void paint(Graphics g) {
       int cols = getWidth();
       int rows = getHeight();
-      int cRep = cols / pixelCols;
-      int rRep = rows / pixelRows;
+      int cRep = cols / dataCols;
+      int rRep = rows / dataRows;
       int rep = Math.max(1, Math.min(cRep, rRep));
 
       g.setColor(getBackground());
       g.fillRect(0, 0, cols, rows);
 
-      for (int ir = 0; ir < pixelRows; ir++) {
-         for (int ic = 0; ic < pixelCols; ic++) {
-            int v = 255 - Math.min(255, Math.max(0, pixels[ir][ic]));
+      for (int ir = 0, i = 0; ir < dataRows; ir++) {
+         for (int ic = 0; ic < dataCols; ic++, i++) {
+            int v = 255 - (int) (256 * data[i]);
             g.setColor(new Color(v, v, v));
             g.fillRect(rep * ic, rep * ir, rep, rep);
          }

@@ -15,6 +15,7 @@ public class ReadMNISTFiles {
          int[] labels = idxR.readInt1D();
          is.close();
          System.out.println(file + " " + labels.length);
+         System.out.println(labels[0] + " " + labels[1]);
       }
       for (String file : IMAGE_FILES) {
          InputStream is = ReadMNISTFiles.class.getClassLoader().getResourceAsStream(file);
