@@ -163,12 +163,6 @@ public class MNistRef extends JFrame implements Runnable {
    }
 
    public static void learn(double rate, double[][] w, double[] b, double[] data, double[] y, double[] t, double[] g) {
-      double dNorm = 1.0;
-      for (int i = 0, n = data.length; i < n; i++) {
-         dNorm += data[i] * data[i];
-      }
-      dNorm = Math.sqrt(dNorm);
-
       double c = 0.0;
       for (int id = 0, nd = b.length; id < nd; id++) {
          double d = y[id] - t[id];
