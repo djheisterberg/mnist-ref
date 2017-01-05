@@ -55,7 +55,7 @@ public class MNistRef extends JFrame implements Runnable {
 
          for (int it = 0, nt = testData.length; it < nt; it++) {
             evaluate(w, b, trainingData[it], y);
-            learn(0.000001, w, b, trainingData[it], y, trainingLabels[it], g);
+            learn(0.01, w, b, trainingData[it], y, trainingLabels[it], g);
          }
 
          int nC = 0;
@@ -66,7 +66,7 @@ public class MNistRef extends JFrame implements Runnable {
          System.out.println("After training " + (ic + 1));
          System.out.println(nC + " correct out of " + testData.length);
 
-         if (nC < nCorrect)
+         if ((ic > 10) && (nC < nCorrect))
             break;
          nCorrect = nC;
       }
@@ -178,7 +178,7 @@ public class MNistRef extends JFrame implements Runnable {
 
       for (int id = 0, nd = b.length; id < nd; id++) {
 
-         double step = -Math.signum(g[id]) * c / (1.0 + c);
+         double step = -rate * Math.signum(g[id]) * c / (1.0 + c);
          double[] wd = w[id];
          for (int i = 0, n = wd.length; i < n; i++) {
             wd[i] += step * data[i];
