@@ -28,7 +28,7 @@ public class MNistRef extends JFrame implements Runnable {
       File dot = new File(".");
       System.out.println(dot.getAbsolutePath());
 
-      Random63 rnd63 = new Random63(8675305);
+      Random63 rnd63 = new Random63(8675309);
 
       double[][] trainingData = readData(TRAINING_DATA);
       double[][] trainingLabels = readLabels(TRAINING_LABELS);

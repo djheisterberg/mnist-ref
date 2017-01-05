@@ -97,7 +97,7 @@ public class WeightComponent extends Component {
          for (int ic = 0; ic < weightsCols; ic++, i++) {
             int v = Math.min(255, (int) (256 * Math.abs(weights[i]) / maxAbs));
             if (weights[i] >= 0) {
-               g.setColor(new Color(0, 0, v));
+               g.setColor(new Color(0, v, 0));
             } else {
                g.setColor(new Color(v, 0, 0));
             }
