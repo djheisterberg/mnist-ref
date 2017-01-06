@@ -13,7 +13,6 @@ public class WeightComponent extends Component {
    private double[] weights = null;
    private int weightsRows = 0;
    private int weightsCols = 0;
-   private double maxAbs = 0.0;
    private int replication = DEFAULT_REPLICATION;
    private Dimension minimumSize = null;
    private Dimension preferredSize = null;
@@ -36,14 +35,10 @@ public class WeightComponent extends Component {
       this.weights = weights;
       this.weightsRows = weightsRows;
       weightsCols = 0;
-      maxAbs = 0.0;
       minimumSize = null;
       preferredSize = null;
       if (weights != null) {
          weightsCols = weights.length / weightsRows;
-         for (double w : weights) {
-            maxAbs = Math.max(maxAbs, Math.abs(w));
-         }
       }
    }
 
@@ -92,6 +87,11 @@ public class WeightComponent extends Component {
 
       g.setColor(getBackground());
       g.fillRect(0, 0, cols, rows);
+
+      double maxAbs = 0.0;
+      for (double w : weights) {
+         maxAbs = Math.max(maxAbs, Math.abs(w));
+      }
 
       for (int ir = 0, i = 0; ir < weightsRows; ir++) {
          for (int ic = 0; ic < weightsCols; ic++, i++) {

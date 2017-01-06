@@ -43,39 +43,6 @@ public class MNistRef extends JFrame implements Runnable {
       double[] y = new double[ND];
       double[] g = new double[ND];
 
-      int nCorrect = 0;
-      for (int it = 0, nt = testData.length; it < nt; it++) {
-         evaluate(w, b, testData[it], y);
-         nCorrect += oneHitCorrect(y, testLabels[it]);
-      }
-      System.out.println("Before training");
-      System.out.println(nCorrect + " correct out of " + testData.length);
-
-      for (int ic = 0; ic < 100; ic++) {
-
-         for (int it = 0, nt = testData.length; it < nt; it++) {
-            evaluate(w, b, trainingData[it], y);
-            learn(0.01, w, b, trainingData[it], y, trainingLabels[it], g);
-         }
-
-         int nC = 0;
-         for (int it = 0, nt = testData.length; it < nt; it++) {
-            evaluate(w, b, testData[it], y);
-            nC += oneHitCorrect(y, testLabels[it]);
-         }
-         System.out.println("After training " + (ic + 1));
-         System.out.println(nC + " correct out of " + testData.length);
-
-         if ((ic > 10) && (nC < nCorrect))
-            break;
-         nCorrect = nC;
-      }
-
-      for (int id = 0, nd = b.length; id < nd; id++) {
-         System.out.print(" " + b[id]);
-      }
-      System.out.println();
-
       MNistRef mnr = new MNistRef();
       double[][] digits = new double[ND][];
       for (int id = 0; id < ND; id++) {
@@ -88,6 +55,43 @@ public class MNistRef extends JFrame implements Runnable {
       mnr.data = digits;
       mnr.weights = w;
       SwingUtilities.invokeLater(mnr);
+      Thread.sleep(1000L);
+
+      int nCorrect = 0;
+      for (int it = 0, nt = testData.length; it < nt; it++) {
+         evaluate(w, b, testData[it], y);
+         nCorrect += oneHitCorrect(y, testLabels[it]);
+      }
+      System.out.println("Before training");
+      System.out.println(nCorrect + " correct out of " + testData.length);
+
+      for (int ic = 0; ic < 200; ic++) {
+
+         for (int it = 0, nt = nn; it < nt; it++) {
+            int ix = (int) (nn * rnd63.nextDouble());
+            evaluate(w, b, trainingData[ix], y);
+            learn(0.5, w, b, trainingData[ix], y, trainingLabels[ix], g);
+         }
+         SwingUtilities.invokeLater(mnr);
+         Thread.sleep(100L);
+
+         int nC = 0;
+         for (int it = 0, nt = testData.length; it < nt; it++) {
+            evaluate(w, b, testData[it], y);
+            nC += oneHitCorrect(y, testLabels[it]);
+         }
+         System.out.println("After training " + (ic + 1));
+         System.out.println(nC + " correct out of " + testData.length);
+
+         if ((ic > 10) && (nC < (nCorrect - 10)))
+            break;
+         nCorrect = Math.max(nCorrect, nC);
+      }
+
+      for (int id = 0, nd = b.length; id < nd; id++) {
+         System.out.print(" " + b[id]);
+      }
+      System.out.println();
    }
 
    public static double[][] readData(String dataFile) throws IOException, ParseException {
@@ -183,6 +187,7 @@ public class MNistRef extends JFrame implements Runnable {
 
    private double[][] data;
    private double[][] weights;
+   private boolean initialized = false;
 
    public MNistRef() {
       super("MNistRef");
@@ -191,17 +196,23 @@ public class MNistRef extends JFrame implements Runnable {
 
    @Override
    public void run() {
-      Container content = getContentPane();
-      content.setLayout(new GridLayout(0, 5));
+      if (!initialized) {
+         initialized = true;
 
-      for (int i = 0, n = 10; i < n; i++) {
-         content.add(new DataComponent(data[i], 28));
-      }
-      for (int i = 0, n = 10; i < n; i++) {
-         content.add(new WeightComponent(weights[i], 28));
-      }
+         Container content = getContentPane();
+         content.setLayout(new GridLayout(0, 5));
 
-      pack();
-      setVisible(true);
+         for (int i = 0, n = 10; i < n; i++) {
+            content.add(new DataComponent(data[i], 28));
+         }
+         for (int i = 0, n = 10; i < n; i++) {
+            content.add(new WeightComponent(weights[i], 28));
+         }
+
+         pack();
+         setVisible(true);
+      } else {
+         repaint();
+      }
    }
 }
